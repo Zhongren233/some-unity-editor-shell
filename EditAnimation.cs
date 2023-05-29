@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -14,16 +14,26 @@ namespace Editor
             foreach (var animationClip in animationClips)
             {
                 var editorCurveBindings = AnimationUtility.GetCurveBindings(animationClip);
-                var xBinding = editorCurveBindings.First(i => i.propertyName == "m_LocalPosition.x");
-                var yBinding = editorCurveBindings.First(i => i.propertyName == "m_LocalPosition.y");
-                var zBinding = editorCurveBindings.First(i => i.propertyName == "m_LocalPosition.z");
-                ReplaceAllValue(animationClip, xBinding, 0);
-                ReplaceAllValue(animationClip, yBinding, 2.3f);
-                ReplaceAllValue(animationClip, zBinding, 6.2f);
+                foreach (var editorCurveBinding in editorCurveBindings)
+                {
+                    Debug.Log(editorCurveBinding.propertyName);
+                }
+                ReplaceAllValue(animationClip, editorCurveBindings.First(i => i.propertyName == "m_LocalPosition.x"), "path_3440880065",0);
+                ReplaceAllValue(animationClip, editorCurveBindings.First(i => i.propertyName == "m_LocalPosition.y"), "path_3440880065",0);
+                ReplaceAllValue(animationClip, editorCurveBindings.First(i => i.propertyName == "m_LocalPosition.z"), "path_3440880065",0);
+                ReplaceAllValue(animationClip, editorCurveBindings.First(i => i.propertyName == "m_LocalPosition.x"), "",0.08f);
+                ReplaceAllValue(animationClip, editorCurveBindings.First(i => i.propertyName == "m_LocalPosition.y"), "",1.8f);
+                ReplaceAllValue(animationClip, editorCurveBindings.First(i => i.propertyName == "m_LocalPosition.z"), "",5f);
+                ReplaceAllValue(animationClip, editorCurveBindings.First(i => i.propertyName == "m_LocalRotation.x"), "",0);
+                // ReplaceAllValue(animationClip, editorCurveBindings.First(i => i.propertyName == "m_LocalRotation.w"), "",1);
+                ReplaceAllValue(animationClip, editorCurveBindings.First(i => i.propertyName == "m_LocalRotation.y"), "",0);
+                ReplaceAllValue(animationClip, editorCurveBindings.First(i => i.propertyName == "m_LocalRotation.z"), "",0);
+                ReplaceAllValue(animationClip, editorCurveBindings.First(i => i.propertyName == "m_LocalRotation.z"), "",0);
+                ReplaceAllValue(animationClip, editorCurveBindings.First(i => i.propertyName == "m_FocalLength"), "",50);
             }
         }
 
-        private static void ReplaceAllValue(AnimationClip animationClip, EditorCurveBinding binding, float value)
+        private static void ReplaceAllValue(AnimationClip animationClip, EditorCurveBinding binding, string path ,float value)
         {
             var animationCurve = AnimationUtility.GetEditorCurve(animationClip, binding);
             var tmpAnimationCurve = new AnimationCurve();
@@ -31,7 +41,8 @@ namespace Editor
             {
                 tmpAnimationCurve.AddKey(animationCurveKey.time, value);
             }
-            animationClip.SetCurve("", typeof(Transform), binding.propertyName, tmpAnimationCurve);
+            
+            animationClip.SetCurve(path, binding.type, binding.propertyName, tmpAnimationCurve);
         }
 
 
